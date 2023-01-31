@@ -1,0 +1,34 @@
+version: '3.0'
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - .:/app
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    container_name: ${PROJECT_NAME}-nginx
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+    volumes:
+      - .:/app
+    container_name: ${PROJECT_NAME}-php-fpm
+
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    container_name: ${PROJECT_NAME}-mysql
+    ports:
+      - "3306:3306"
