@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 
 /**
  * @Route("/api/services")
@@ -33,7 +35,16 @@ class ClientServiceController extends AbstractFOSRestController
 
     /**
      * @Route("/add", "name=services_add", methods={"POST"})
-     *
+     * @OA\Post (description="Добавление услуги")
+     * @OA\RequestBody(
+     *     @OA\JsonContent(
+     *     @OA\Property(type="string", property="name", required={"true"}),
+     *     @OA\Property(type="string", format="uuid", property="product", required={"true"})
+     * ))
+     * @OA\Response(response="200", description="successful operation",
+     *     @OA\JsonContent(@OA\Schema ( @OA\Property(property="item", ref=@Model(type=ClientService::class))
+     * )))
+     * @OA\Response(response="400", description="Validation Failed")
      * @param Request $request
      * @return View
      */
@@ -57,6 +68,16 @@ class ClientServiceController extends AbstractFOSRestController
 
     /**
      * @Route("/edit/{id}", "name=client_services_edit", methods={"POST"})
+     * @OA\Post (description="Редактирование услуги")
+     * @OA\RequestBody(
+     *     @OA\JsonContent(
+     *     @OA\Property(type="string", property="name", required={"true"}),
+     *     @OA\Property(type="string", format="uuid", property="product", required={"true"})
+     * ))
+     * @OA\Response(response="200", description="successful operation",
+     *     @OA\JsonContent(@OA\Schema ( @OA\Property(property="item", ref=@Model(type=ClientService::class))
+     * )))
+     * @OA\Response(response="400", description="Error validation: impossible to change product ID")
      * @param $id
      * @param Request $request
      * @return View
@@ -93,6 +114,10 @@ class ClientServiceController extends AbstractFOSRestController
 
     /**
      * @Route("/", "name=client_services_items", methods={"GET"})
+     * @OA\Get (description="Список существующих услуг клиента")
+     * @OA\Response(response="200", description="successful operation",
+     *     @OA\JsonContent(@OA\Schema ( @OA\Property(property="item", ref=@Model(type=ClientService::class))
+     * )))
      * @return View
      */
     public function items(): View
@@ -104,6 +129,8 @@ class ClientServiceController extends AbstractFOSRestController
 
     /**
      * @Route("/delete/{id}", "name=client_services_delete", methods={"GET"})
+     * @OA\Get (description="Удалить услугу")
+     * @OA\Response(response="204", description="successful operation")
      * @param $id
      * @return View
      */
@@ -122,6 +149,10 @@ class ClientServiceController extends AbstractFOSRestController
 
     /**
      * @Route("/upgrade/{id}/{product_id}", "name=client_services_upgrade_product", methods={"POST"})
+     * @OA\Post (description="Смена тарифа (upgrade)")
+     * @OA\Response(response="200", description="successful operation",
+     *     @OA\JsonContent(@OA\Schema ( @OA\Property(property="item", ref=@Model(type=ClientService::class))
+     * )))
      * @param $id
      * @param Request $request
      * @return View
@@ -147,6 +178,11 @@ class ClientServiceController extends AbstractFOSRestController
 
     /**
      * @Route("/downgrade/{id}/{product_id}", "name=client_services_downgrade_product", methods={"POST"})
+     * @OA\Post (description="Смена тарифа (downgrade)")
+     * @OA\Response(response="200", description="successful operation",
+     *     @OA\JsonContent(@OA\Schema ( @OA\Property(property="item", ref=@Model(type=ClientService::class))
+     * )))
+     * @OA\Response(response="400", description="Impossible to make downgrade in automatic mode")
      * @param $id
      * @param Request $request
      * @return View
