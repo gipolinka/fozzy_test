@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -22,7 +23,7 @@ class ProductController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/", "name=client_services_items", methods={"GET"})
+     * @Route("/", "name=product_services_items", methods={"GET"})
      * @return View
      */
     public function items(): View
@@ -31,4 +32,5 @@ class ProductController extends AbstractFOSRestController
 
         return $this->view(['items' => $items]);
     }
+
 }
